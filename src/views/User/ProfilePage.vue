@@ -72,7 +72,6 @@
             </div>
           </div>
           <button type="submit" class="btn btn-primary-glow">SAVE TAGS</button>
-          <span v-if="saveMsg" class="save-msg mono">{{ saveMsg }}</span>
         </form>
       </GlowCard>
 
@@ -102,10 +101,11 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import GlowCard from '@/components/ui/GlowCard.vue'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const auth = useAuthStore()
-const saveMsg = ref('')
+const toast = useToast()
 
 const selectedTags = reactive({
   tech_stack: [...(auth.user?.profile_tags?.tech_stack || [])],
@@ -138,12 +138,14 @@ async function handleSaveTags() {
     interests: selectedTags.interests,
     status: selectedTags.status
   })
-  saveMsg.value = result.success ? '保存成功' : '保存失败'
-  setTimeout(() => saveMsg.value = '', 2000)
+  result.success ? toast.success('技术标签已更新') : toast.error(result.error || '保存失败')
 }
 
 async function toggleEDM() {
-  await auth.subscribeEDM(!auth.user?.edm_subscribed)
+  const result = await auth.subscribeEDM(!auth.user?.edm_subscribed)
+  if (result.success) {
+    toast.info(auth.user?.edm_subscribed ? '已开启邮件通知' : '已关闭邮件通知')
+  }
 }
 
 function handleLogout() {

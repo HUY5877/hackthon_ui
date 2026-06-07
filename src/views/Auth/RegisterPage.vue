@@ -41,9 +41,11 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const auth = useAuthStore()
+const toast = useToast()
 const error = ref('')
 
 const form = reactive({ email: '', username: '', password: '' })
@@ -52,6 +54,7 @@ async function handleRegister() {
   error.value = ''
   const result = await auth.register(form.email, form.username, form.password)
   if (result.success) {
+    toast.success('账号创建成功，欢迎加入！')
     router.push('/')
   } else {
     error.value = result.error

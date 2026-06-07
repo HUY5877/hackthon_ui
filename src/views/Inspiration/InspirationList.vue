@@ -22,7 +22,7 @@
     </div>
 
     <div v-if="loading" class="skeleton-grid">
-      <div v-for="n in 6" :key="n" class="skeleton-card"></div>
+      <SkeletonCard v-for="n in 6" :key="n" />
     </div>
 
     <div v-else class="inspiration-grid">
@@ -67,6 +67,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { inspirationAPI } from '@/api'
 import GlowCard from '@/components/ui/GlowCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { useDebounceFn } from '@vueuse/core'
 
 const items = ref([])
@@ -149,9 +150,6 @@ onMounted(search)
 .stat { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 
 .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: var(--space-6); }
-.skeleton-card { height: 300px; background: var(--color-bg-secondary); border-radius: var(--radius-lg); animation: pulse 1.5s ease-in-out infinite; }
-
-@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: var(--space-6); margin-top: var(--space-10); }
 .btn-page { padding: var(--space-2) var(--space-5); background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-primary); cursor: pointer; font-size: var(--text-sm); }

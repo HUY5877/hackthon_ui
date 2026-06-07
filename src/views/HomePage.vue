@@ -35,7 +35,12 @@
         <h2 class="section-title">&#x2666; 热门赛事</h2>
         <router-link to="/hackathons" class="section-link mono">VIEW ALL →</router-link>
       </div>
-      <div class="hackathon-grid">
+      <!-- 加载中：骨架屏 -->
+      <div v-if="loading" class="hackathon-grid">
+        <SkeletonCard v-for="n in 3" :key="n" />
+      </div>
+      <!-- 加载完成：真实数据 -->
+      <div v-else class="hackathon-grid">
         <HackathonCard
           v-for="h in hotHackathons"
           :key="h.id"
@@ -94,6 +99,7 @@ import { ref, onMounted } from 'vue'
 import { hackathonsAPI, recommendationsAPI } from '@/api'
 import HackathonCard from '@/components/common/HackathonCard.vue'
 import GlowCard from '@/components/ui/GlowCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
 const hotHackathons = ref([])
 const forYou = ref([])

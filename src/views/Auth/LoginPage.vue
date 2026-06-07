@@ -43,10 +43,12 @@
 import { reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
+const toast = useToast()
 const error = ref('')
 
 const form = reactive({
@@ -58,6 +60,7 @@ async function handleLogin() {
   error.value = ''
   const result = await auth.login(form.email, form.password)
   if (result.success) {
+    toast.success('登录成功，欢迎回来！')
     const redirect = route.query.redirect || '/'
     router.push(redirect)
   } else {

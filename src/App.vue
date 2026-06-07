@@ -1,6 +1,7 @@
 <template>
   <div class="app-root">
     <AppHeader />
+    <ToastContainer />
     <main class="main-content">
       <router-view v-slot="{ Component }">
         <transition name="page-fade" mode="out-in">
@@ -18,6 +19,7 @@
 
 <script setup>
 import AppHeader from '@/components/layout/AppHeader.vue'
+import ToastContainer from '@/components/ui/ToastContainer.vue'
 </script>
 
 <style scoped>

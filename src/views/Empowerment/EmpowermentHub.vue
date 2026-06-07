@@ -11,7 +11,11 @@
         <h2 class="section-title">&#x25B6; Vibecoding 教程</h2>
         <router-link to="/empowerment/articles?type=vibecoding" class="section-link mono">VIEW ALL →</router-link>
       </div>
-      <div class="article-grid">
+      <!-- 加载中：骨架屏 -->
+      <div v-if="loading" class="article-grid">
+        <SkeletonCard v-for="n in 3" :key="n" />
+      </div>
+      <div v-else class="article-grid">
         <div v-for="a in vibecodingArticles" :key="a.id" class="article-card" @click="$router.push(`/empowerment/articles/${a.slug}`)">
           <GlowCard>
             <div class="card-sub mono">{{ a.sub_category }}</div>
@@ -34,7 +38,11 @@
         <h2 class="section-title">&#x25B6; 参赛指南</h2>
         <router-link to="/empowerment/articles?type=guide" class="section-link mono">VIEW ALL →</router-link>
       </div>
-      <div class="article-grid">
+      <!-- 加载中：骨架屏 -->
+      <div v-if="loading" class="article-grid">
+        <SkeletonCard v-for="n in 2" :key="n" />
+      </div>
+      <div v-else class="article-grid">
         <div v-for="a in guideArticles" :key="a.id" class="article-card" @click="$router.push(`/empowerment/articles/${a.slug}`)">
           <GlowCard>
             <div class="card-sub mono">{{ a.sub_category }}</div>
@@ -54,11 +62,14 @@
 import { ref, onMounted } from 'vue'
 import { empowermentAPI } from '@/api'
 import GlowCard from '@/components/ui/GlowCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
 const vibecodingArticles = ref([])
 const guideArticles = ref([])
+const loading = ref(true)
 
 onMounted(async () => {
+  loading.value = true
   try {
     const [vibeRes, guideRes] = await Promise.all([
       empowermentAPI.getVibecoding(6),
@@ -77,6 +88,8 @@ onMounted(async () => {
       { id: 4, title: '黑客松组队与参赛全流程科普：从报名到路演', slug: 'hackathon-guide', sub_category: 'process', summary: '一站式指南，覆盖赛前准备到赛后跟进。', estimated_read_time: 25 },
       { id: 5, title: '如何撰写并制作高分路演PPT（Pitch Deck）', slug: 'pitch-deck-guide', sub_category: 'pitch_deck', summary: '评审视角的完整指南，附真实获奖案例。', estimated_read_time: 18 },
     ]
+  } finally {
+    loading.value = false
   }
 })
 </script>

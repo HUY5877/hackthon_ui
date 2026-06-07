@@ -41,7 +41,7 @@
     <!-- Results -->
     <div v-if="loading" class="loading-state">
       <div class="skeleton-grid">
-        <div v-for="n in 6" :key="n" class="skeleton-card"></div>
+        <SkeletonCard v-for="n in 6" :key="n" />
       </div>
     </div>
 
@@ -87,6 +87,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { hackathonsAPI } from '@/api'
 import HackathonCard from '@/components/common/HackathonCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { useDebounceFn } from '@vueuse/core'
 
 const items = ref([])
@@ -218,18 +219,6 @@ onMounted(fetchData)
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: var(--space-6);
-}
-
-.skeleton-card {
-  height: 220px;
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-lg);
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.8; }
 }
 
 /* ── Empty State ── */
