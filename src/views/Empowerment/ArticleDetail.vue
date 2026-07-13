@@ -1,90 +1,97 @@
 <template>
-  <div class="page container page-section">
-    <div v-if="loading" class="skeleton-detail"></div>
+  <main class="container page-section article-page">
+    <div v-if="loading" class="article-skeleton" aria-label="正在加载"></div>
     <template v-else-if="article">
-      <router-link to="/empowerment" class="back-link mono">&larr; BACK TO EMPOWERMENT</router-link>
-      <div class="detail-hero">
-        <div class="hero-meta">
-          <span class="type-badge mono">{{ article.content_type === 'vibecoding' ? 'VIBECODING' : 'GUIDE' }}</span>
-          <span class="sub-badge mono" v-if="article.sub_category">{{ article.sub_category }}</span>
-          <span class="read-time mono">&#x231A; {{ article.estimated_read_time }}min</span>
-          <span class="diff-badge" :class="'diff--' + article.difficulty_level">
-            {{ article.difficulty_level === 'beginner' ? '入门' : article.difficulty_level === 'intermediate' ? '进阶' : '高级' }}
-          </span>
+      <RouterLink to="/empowerment/articles" class="back-link">← 返回资源库</RouterLink>
+      <DataSourceNotice :mock="usingMock" class="source-notice" />
+      <header class="article-header">
+        <div class="article-header__meta">
+          <BaseBadge :tone="article.content_type === 'guide' ? 'neutral' : 'brand'">{{ typeLabel }}</BaseBadge>
+          <span>{{ difficultyLabel }}</span><span>{{ article.estimated_read_time || 10 }} 分钟阅读</span>
         </div>
         <h1>{{ article.title }}</h1>
-        <p class="summary">{{ article.summary }}</p>
-        <div class="tag-row" v-if="article.tags?.length">
-          <span class="tag" v-for="t in article.tags" :key="t">#{{ t }}</span>
-        </div>
+        <p>{{ article.summary }}</p>
+        <div v-if="article.tags?.length" class="article-header__tags"><span v-for="tag in article.tags" :key="tag">{{ tag }}</span></div>
+      </header>
+
+      <div class="article-layout">
+        <article class="article-prose" v-html="renderedContent"></article>
+        <aside class="article-aside">
+          <span class="mono">ARTICLE GUIDE</span>
+          <h2>阅读建议</h2>
+          <p>先快速读完结构，再回到与你当前参赛阶段最相关的部分执行。</p>
+          <a v-if="article.external_url" :href="article.external_url" target="_blank" rel="noopener noreferrer">外部参考 ↗</a>
+          <a v-if="article.video_url" :href="article.video_url" target="_blank" rel="noopener noreferrer">视频教程 ↗</a>
+          <BaseButton to="/empowerment/articles" variant="secondary" block>继续浏览</BaseButton>
+        </aside>
       </div>
-      <div class="content-area" v-html="renderedContent"></div>
     </template>
-  </div>
+    <EmptyState v-else title="文章不存在" description="该内容可能已下线或链接有误。">
+      <template #action><BaseButton to="/empowerment/articles">返回资源库</BaseButton></template>
+    </EmptyState>
+  </main>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { empowermentAPI } from '@/api'
+import { renderSafeMarkdown } from '@/utils/safeMarkdown'
+import DataSourceNotice from '@/components/common/DataSourceNotice.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
+import BaseBadge from '@/components/ui/BaseBadge.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const route = useRoute()
 const article = ref(null)
 const loading = ref(true)
-
-const renderedContent = computed(() => {
-  if (!article.value?.full_content) return ''
-  return article.value.full_content
-    .replace(/## (.+)/g, '<h3 class="content-h3">$1</h3>')
-    .replace(/### (.+)/g, '<h4 class="content-h4">$1</h4>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>')
-})
+const usingMock = ref(false)
+const renderedContent = computed(() => renderSafeMarkdown(article.value?.full_content || ''))
+const typeLabel = computed(() => article.value?.content_type === 'guide' ? '参赛指南' : 'Vibecoding')
+const difficultyLabel = computed(() => ({ beginner: '入门', intermediate: '进阶', advanced: '高级' }[article.value?.difficulty_level] || '通用'))
 
 onMounted(async () => {
   try {
     const res = await empowermentAPI.getArticle(route.params.slug)
     article.value = res.data
-  } catch (e) {
+  } catch (_) {
+    usingMock.value = true
     article.value = {
-      title: '示例文章',
-      content_type: 'vibecoding',
-      sub_category: 'cursor',
-      summary: '这是一篇示例教程。',
-      full_content: '## 前言\n\n这篇文章将教你如何使用 AI 工具提升开发效率...\n\n## 核心步骤\n\n1. 选择合适的AI工具\n2. 学习Prompt Engineering\n3. 实践迭代',
-      difficulty_level: 'beginner',
-      estimated_read_time: 15,
-      tags: ['Cursor', 'AI', '开发效率']
+      title: '用 Cursor 从想法到可演示 MVP', content_type: 'vibecoding', sub_category: 'cursor',
+      summary: '从需求拆解、代码生成到调试发布，建立一套适合短周期参赛的 AI 开发工作流。',
+      full_content: '## 先定义一个可演示的结果\n\n不要从“做一个完整平台”开始，而要描述评委在三分钟内能看到的变化。\n\n## 把任务拆成稳定的上下文\n\n1. 用一段话定义用户、问题和结果\n2. 每次只让 AI 处理一个可验证模块\n3. 运行、检查，再进入下一步\n\n## 保持代码可接管\n\n- 要求生成简短的变更说明\n- 把关键决策写入项目文档\n- 在每个阶段保留可运行版本\n\n> AI 的价值不是替你做完所有事，而是降低每一次验证的成本。',
+      difficulty_level: 'beginner', estimated_read_time: 15, tags: ['Cursor', 'AI', 'MVP']
     }
-  } finally {
-    loading.value = false
-  }
+  } finally { loading.value = false }
 })
 </script>
 
 <style scoped>
-.back-link { display: inline-block; margin-bottom: var(--space-6); font-size: var(--text-sm); color: var(--color-text-tertiary); }
-.detail-hero { margin-bottom: var(--space-8); }
-.hero-meta { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; }
-.type-badge { font-size: var(--text-xs); padding: 2px 8px; background: rgba(0, 212, 255, 0.1); color: var(--color-primary); border-radius: var(--radius-full); }
-.sub-badge { font-size: var(--text-xs); padding: 2px 8px; background: var(--color-bg-secondary); color: var(--color-text-secondary); border-radius: var(--radius-full); }
-.read-time { font-size: var(--text-xs); color: var(--color-text-tertiary); }
-.diff-badge { font-size: var(--text-xs); padding: 2px 8px; border-radius: var(--radius-full); font-family: var(--font-mono); }
-.diff--beginner { background: rgba(16, 185, 129, 0.15); color: var(--color-success); }
-.diff--intermediate { background: rgba(249, 115, 22, 0.15); color: var(--color-accent); }
-.diff--advanced { background: rgba(239, 68, 68, 0.15); color: var(--color-error); }
-
-.detail-hero h1 { font-size: var(--text-3xl); margin-bottom: var(--space-4); }
-.summary { font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-4); }
-.tag-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-.tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-primary); background: rgba(0, 212, 255, 0.06); padding: 2px 8px; border-radius: var(--radius-sm); }
-
-.content-area { line-height: 1.8; color: var(--color-text-secondary); max-width: 800px; }
-.content-area :deep(.content-h3) { font-size: var(--text-xl); color: var(--color-text-primary); margin-top: var(--space-8); margin-bottom: var(--space-4); }
-.content-area :deep(.content-h4) { font-size: var(--text-lg); color: var(--color-text-primary); margin-top: var(--space-6); margin-bottom: var(--space-3); }
-.content-area :deep(p) { margin-bottom: var(--space-4); }
-
-.skeleton-detail { height: 600px; background: var(--color-bg-secondary); border-radius: var(--radius-lg); animation: pulse 1.5s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
+.article-page { max-width: 1120px; padding-bottom: var(--space-20); }
+.back-link { display: inline-flex; margin-bottom: var(--space-6); color: var(--color-text-secondary); font-size: var(--text-sm); }
+.source-notice { margin-bottom: var(--space-5); }
+.article-header { max-width: 880px; padding: var(--space-8) 0 var(--space-12); }
+.article-header__meta { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); color: var(--color-text-tertiary); font-size: var(--text-xs); }
+.article-header h1 { margin-top: var(--space-5); font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1.07; letter-spacing: -.055em; }
+.article-header > p { max-width: 760px; margin-top: var(--space-5); color: var(--color-text-secondary); font-size: var(--text-lg); }
+.article-header__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-6); }
+.article-header__tags span { padding: 5px 9px; color: var(--color-text-secondary); background: var(--surface-muted); border-radius: var(--radius-sm); font-size: var(--text-xs); }
+.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: var(--space-12); align-items: start; }
+.article-prose { min-width: 0; padding: var(--space-10); background: var(--surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); color: var(--color-text-secondary); font-size: 1.02rem; line-height: 1.9; }
+.article-prose :deep(h2), .article-prose :deep(h3), .article-prose :deep(h4) { margin: 1.8em 0 .6em; color: var(--color-text-primary); line-height: 1.3; }
+.article-prose :deep(h2:first-child), .article-prose :deep(h3:first-child) { margin-top: 0; }
+.article-prose :deep(p), .article-prose :deep(ul), .article-prose :deep(ol), .article-prose :deep(blockquote) { margin-bottom: 1.1em; }
+.article-prose :deep(ul), .article-prose :deep(ol) { padding-left: 1.5em; }
+.article-prose :deep(blockquote) { padding: var(--space-4) var(--space-5); color: var(--color-primary-dim); background: var(--color-primary-soft); border-left: 3px solid var(--color-primary); border-radius: 0 var(--radius-control) var(--radius-control) 0; }
+.article-prose :deep(code) { padding: 2px 5px; background: var(--surface-muted); border-radius: 4px; font: .9em var(--font-mono); }
+.article-aside { position: sticky; top: calc(var(--header-height) + var(--space-6)); display: grid; gap: var(--space-3); padding: var(--space-6); background: var(--surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); }
+.article-aside > span { color: var(--color-primary); font-size: 10px; letter-spacing: .1em; }
+.article-aside h2 { font-size: var(--text-lg); }
+.article-aside p { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.article-aside a { color: var(--color-primary); font-size: var(--text-sm); }
+.article-aside :deep(.base-button) { margin-top: var(--space-3); }
+.article-skeleton { height: 700px; background: var(--surface-muted); border-radius: var(--radius-card); animation: pulse 1.4s infinite; }
+@keyframes pulse { 50% { opacity: .55; } }
+@media (max-width: 800px) { .article-layout { grid-template-columns: 1fr; } .article-aside { position: static; } }
+@media (max-width: 640px) { .article-header { padding-top: var(--space-5); } .article-prose { padding: var(--space-5); } }
 </style>
