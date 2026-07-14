@@ -3,7 +3,14 @@ import { ref, computed } from 'vue'
 import { authAPI, usersAPI } from '@/api'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
+  let storedUser = null
+  try {
+    storedUser = JSON.parse(localStorage.getItem('user') || 'null')
+  } catch (_) {
+    localStorage.removeItem('user')
+  }
+
+  const user = ref(storedUser)
   const token = ref(localStorage.getItem('access_token') || '')
   const loading = ref(false)
 
@@ -51,6 +58,8 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user')
   }
 
+  window.addEventListener('auth:unauthorized', logout)
+
   async function updateProfileTags(tags) {
     try {
       const res = await usersAPI.updateTags(tags)
@@ -59,6 +68,18 @@ export const useAuthStore = defineStore('auth', () => {
       return { success: true }
     } catch (err) {
       return { success: false, error: '更新失败' }
+    }
+  }
+
+  async function refreshProfile() {
+    if (!token.value) return { success: false }
+    try {
+      const res = await usersAPI.getProfile()
+      user.value = res.data
+      localStorage.setItem('user', JSON.stringify(res.data))
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: '获取用户信息失败' }
     }
   }
 
@@ -75,5 +96,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { user, token, loading, isLoggedIn, isGuest, login, register, logout, updateProfileTags, subscribeEDM }
+  return { user, token, loading, isLoggedIn, isGuest, login, register, logout, refreshProfile, updateProfileTags, subscribeEDM }
 })

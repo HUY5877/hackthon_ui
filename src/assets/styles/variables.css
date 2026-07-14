@@ -1,59 +1,69 @@
-/* ═══════════════════════════════════════════════════════════════════
-   黑客松信息聚合平台 — 设计系统 (Cyberpunk Developer Theme)
-   基于 ui-ux-pro-max 设计系统生成
-   ═══════════════════════════════════════════════════════════════════ */
+/* HackHub Quiet Tech design tokens
+   Design source: docs/DESIGN_SYSTEM.md */
 
 :root {
-  /* ── 核心色调 ──────────────────────────── */
-  --color-primary: #00D4FF;        /* 霓虹青 (主色调) */
-  --color-primary-dim: #0099CC;    /* 霓虹青暗色 */
-  --color-secondary: #7C3AED;      /* 紫罗兰 */
-  --color-accent: #F97316;         /* 警示橙 (CTA) */
-  --color-success: #10B981;        /* 终端绿 */
-  --color-warning: #F59E0B;        /* 琥珀 */
-  --color-error: #EF4444;          /* 错误红 */
-  --color-info: #3B82F6;           /* 信息蓝 */
+  /* Brand */
+  --color-primary: #24543d;
+  --color-primary-dim: #173d2b;
+  --color-primary-soft: #e7f0ea;
+  --color-secondary: #657a70;
+  --color-accent: #e45d37;
+  --color-success: #237a4b;
+  --color-warning: #b76a16;
+  --color-error: #c94136;
+  --color-info: #3569a8;
 
-  /* ── 表面与背景 ─────────────────────────── */
-  --color-bg-primary: #0A0E1A;     /* 深空黑 (主背景) */
-  --color-bg-secondary: #111827;   /* 深灰蓝 (卡片背景) */
-  --color-bg-tertiary: #1A1F2E;    /* 中灰蓝 (悬浮态) */
-  --color-bg-elevated: #1E2433;    /* 抬高表面 */
-  --color-bg-glass: rgba(17, 24, 39, 0.85);  /* 玻璃效果 */
+  /* Surfaces */
+  --color-bg-primary: #f7f7f3;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #f0f2ee;
+  --color-bg-elevated: #ffffff;
+  --color-bg-glass: rgba(255, 255, 255, 0.94);
 
-  /* ── 文字层级 ──────────────────────────── */
-  --color-text-primary: #F1F5F9;   /* 主文字 (slate-100) */
-  --color-text-secondary: #94A3B8; /* 次要文字 (slate-400) */
-  --color-text-tertiary: #64748B;  /* 辅助文字 (slate-500) */
-  --color-text-inverse: #0A0E1A;   /* 反色文字 */
+  /* Semantic surface aliases */
+  --surface-page: var(--color-bg-primary);
+  --surface-card: var(--color-bg-secondary);
+  --surface-muted: var(--color-bg-tertiary);
+  --surface-elevated: var(--color-bg-elevated);
 
-  /* ── 边框与分割线 ───────────────────────── */
-  --color-border: rgba(148, 163, 184, 0.12);
-  --color-border-active: rgba(0, 212, 255, 0.4);
-  --color-border-glow: rgba(0, 212, 255, 0.2);
+  /* Text */
+  --color-text-primary: #17221c;
+  --color-text-secondary: #56615b;
+  --color-text-tertiary: #858f89;
+  --color-text-inverse: #ffffff;
 
-  /* ── 霓虹发光效果 ───────────────────────── */
-  --glow-primary: 0 0 12px rgba(0, 212, 255, 0.4), 0 0 24px rgba(0, 212, 255, 0.15);
-  --glow-secondary: 0 0 12px rgba(124, 58, 237, 0.4), 0 0 24px rgba(124, 58, 237, 0.15);
-  --glow-accent: 0 0 12px rgba(249, 115, 22, 0.4), 0 0 24px rgba(249, 115, 22, 0.15);
-  --glow-success: 0 0 12px rgba(16, 185, 129, 0.4), 0 0 24px rgba(16, 185, 129, 0.15);
+  /* Semantic text aliases */
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-tertiary);
+  --text-inverse: var(--color-text-inverse);
 
-  /* ── 字体系统 ──────────────────────────── */
-  --font-display: 'Orbitron', sans-serif;       /* 标题 */
-  --font-mono: 'JetBrains Mono', monospace;     /* 代码/数据 */
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  /* Borders */
+  --color-border: #dde2de;
+  --color-border-active: #9bad9f;
+  --color-border-subtle: #eaeeeb;
+  --color-border-glow: var(--color-border-active); /* legacy alias */
 
-  /* ── 字号层级 ──────────────────────────── */
-  --text-xs: 0.75rem;     /* 12px */
-  --text-sm: 0.875rem;    /* 14px */
-  --text-base: 1rem;      /* 16px */
-  --text-lg: 1.125rem;    /* 18px */
-  --text-xl: 1.25rem;     /* 20px */
-  --text-2xl: 1.5rem;     /* 24px */
-  --text-3xl: 1.875rem;   /* 30px */
-  --text-4xl: 2.25rem;    /* 36px */
+  --border-default: var(--color-border);
+  --border-subtle: var(--color-border-subtle);
+  --border-strong: #bcc7c0;
 
-  /* ── 间距系统 (4px 基准) ────────────────── */
+  /* Typography */
+  --font-display: 'Space Grotesk', 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --text-hero: clamp(2.75rem, 5.2vw, 4.5rem);
+
+  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -64,26 +74,42 @@
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
 
-  /* ── 圆角 ──────────────────────────────── */
-  --radius-sm: 6px;
+  /* Layout */
+  --layout-max-width: 1200px;
+  --layout-gutter: clamp(16px, 3vw, 32px);
+  --header-height: 72px;
+
+  /* Radius */
+  --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
+  --radius-control: var(--radius-md);
+  --radius-card: var(--radius-lg);
 
-  /* ── 阴影 ──────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(20, 35, 27, 0.04);
+  --shadow-md: 0 8px 24px rgba(20, 35, 27, 0.06);
+  --shadow-lg: 0 12px 32px rgba(20, 35, 27, 0.08);
+  --shadow-xl: 0 24px 56px rgba(20, 35, 27, 0.1);
+  --shadow-glass: var(--shadow-sm);
 
-  /* ── 过渡 ──────────────────────────────── */
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
+  /* Legacy glow aliases kept while old pages migrate */
+  --glow-primary: 0 10px 28px rgba(36, 84, 61, 0.16);
+  --glow-secondary: 0 10px 28px rgba(101, 122, 112, 0.14);
+  --glow-accent: 0 10px 28px rgba(228, 93, 55, 0.14);
+  --glow-success: 0 10px 28px rgba(35, 122, 75, 0.14);
 
-  /* ── Z-index 层级 ──────────────────────── */
+  /* Motion */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layering */
   --z-base: 0;
   --z-dropdown: 10;
   --z-sticky: 20;

@@ -29,14 +29,15 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 
 .main-content {
   flex: 1;
-  padding-top: 72px; /* header height */
+  padding-top: var(--header-height);
 }
 
 .app-footer {
-  padding: var(--space-8) 0;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-10) 0;
+  border-top: 1px solid var(--color-border-subtle);
   text-align: center;
-  margin-top: var(--space-16);
+  margin-top: var(--space-20);
+  background: var(--surface-card);
 }
 
 /* ── Page Transitions ── */
