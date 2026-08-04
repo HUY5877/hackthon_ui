@@ -28,6 +28,12 @@ const routes = [
         meta: { title: '赛事内容', requiresAdmin: true }
       },
       {
+        path: 'crawler',
+        name: 'admin-crawler',
+        component: () => import('@/views/Admin/AdminCrawler.vue'),
+        meta: { title: '爬虫调度', requiresAdmin: true }
+      },
+      {
         path: 'users',
         name: 'admin-users',
         component: () => import('@/views/Admin/AdminUsers.vue'),
