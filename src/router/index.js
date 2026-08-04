@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { resolveAdminAccess } from '@/router/access'
 
 const routes = [
   { path: '/', name: 'home', component: () => import('@/views/HomePage.vue'), meta: { title: '首页' } },
@@ -12,7 +14,21 @@ const routes = [
   { path: '/empowerment/articles/:slug', name: 'article-detail', component: () => import('@/views/Empowerment/ArticleDetail.vue'), meta: { title: '文章详情' } },
   { path: '/login', name: 'login', component: () => import('@/views/Auth/LoginPage.vue'), meta: { title: '登录', guest: true } },
   { path: '/register', name: 'register', component: () => import('@/views/Auth/RegisterPage.vue'), meta: { title: '注册', guest: true } },
-  { path: '/profile', name: 'profile', component: () => import('@/views/User/ProfilePage.vue'), meta: { title: '个人中心', requiresAuth: true } }
+  { path: '/profile', name: 'profile', component: () => import('@/views/User/ProfilePage.vue'), meta: { title: '个人中心', requiresAuth: true } },
+  {
+    path: '/admin',
+    component: () => import('@/views/Admin/AdminLayout.vue'),
+    redirect: '/admin/users',
+    meta: { title: '运营控制台', requiresAdmin: true },
+    children: [
+      {
+        path: 'users',
+        name: 'admin-users',
+        component: () => import('@/views/Admin/AdminUsers.vue'),
+        meta: { title: '用户权限', requiresAdmin: true }
+      }
+    ]
+  }
 ]
 
 const router = createRouter({
@@ -21,7 +37,10 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 })
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
+  const adminAccess = await resolveAdminAccess(to, useAuthStore())
+  if (adminAccess !== true) return adminAccess
+
   const token = localStorage.getItem('access_token')
   if (to.meta.requiresAuth && !token) {
     return { name: 'login', query: { redirect: to.fullPath } }

@@ -24,6 +24,7 @@
         </button>
 
         <template v-if="auth.isLoggedIn">
+          <RouterLink v-if="auth.isAdmin" to="/admin" class="admin-entry">运营台</RouterLink>
           <RouterLink to="/profile" class="user-chip">
             <span class="user-avatar">{{ userInitial }}</span>
             <span class="user-name">{{ auth.user?.username }}</span>
@@ -66,6 +67,7 @@
             </RouterLink>
             <div class="mobile-nav__footer">
               <template v-if="auth.isLoggedIn">
+                <BaseButton v-if="auth.isAdmin" to="/admin" variant="secondary" block @click="closeMenu">进入运营控制台</BaseButton>
                 <BaseButton to="/profile" block @click="closeMenu">个人中心</BaseButton>
                 <BaseButton variant="secondary" block @click="logout">退出登录</BaseButton>
               </template>
@@ -209,6 +211,22 @@ onBeforeUnmount(() => {
   gap: var(--space-2);
 }
 
+.admin-entry {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-3);
+  color: var(--color-primary-dim);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.admin-entry:hover { color: var(--color-text-inverse); background: var(--color-primary); text-decoration: none; }
+
 .search-action {
   min-height: 40px;
   display: inline-flex;
@@ -332,6 +350,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 560px) {
   .user-chip { display: none; }
+  .admin-entry { display: none; }
   .search-action { width: 44px; justify-content: center; }
 }
 </style>
