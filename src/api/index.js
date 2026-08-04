@@ -101,4 +101,18 @@ export const systemAPI = {
   crawlerStatus: () => api.get('/crawler/status', { baseURL: '/api' })
 }
 
+// Administrator control-plane API: backend mutations intentionally use POST.
+export const adminAPI = {
+  listUsers: (params) => api.get('/admin/users', { params }),
+  promoteUser: (userId) => api.post(`/admin/users/${userId}/promote`),
+  listHackathons: (params) => api.get('/admin/hackathons', { params }),
+  getHackathon: (hackathonId) => api.get(`/admin/hackathons/${hackathonId}`),
+  updateHackathon: (hackathonId, data) => api.post(`/admin/hackathons/${hackathonId}/update`, data),
+  deleteHackathon: (hackathonId, data) => api.post(`/admin/hackathons/${hackathonId}/delete`, data),
+  getCrawlerOverview: () => api.get('/admin/crawler/overview'),
+  createCrawlerTask: (data) => api.post('/admin/crawler/tasks', data),
+  listCrawlerTasks: (params) => api.get('/admin/crawler/tasks', { params }),
+  getCrawlerTask: (taskId) => api.get(`/admin/crawler/tasks/${taskId}`)
+}
+
 export default api

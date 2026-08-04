@@ -9,6 +9,11 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    clearMocks: true
+  },
   server: {
     port: 3000,
     proxy: {

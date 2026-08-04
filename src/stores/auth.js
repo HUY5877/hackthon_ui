@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => !!token.value)
   const isGuest = computed(() => !token.value)
+  const isAdmin = computed(() => user.value?.role === 'admin')
 
   async function login(email, password) {
     loading.value = true
@@ -96,5 +97,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { user, token, loading, isLoggedIn, isGuest, login, register, logout, refreshProfile, updateProfileTags, subscribeEDM }
+  return { user, token, loading, isLoggedIn, isGuest, isAdmin, login, register, logout, refreshProfile, updateProfileTags, subscribeEDM }
 })
