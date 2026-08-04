@@ -7,7 +7,8 @@ const { auth } = vi.hoisted(() => ({
     isLoggedIn: true,
     isAdmin: true,
     user: { username: 'admin' },
-    logout: vi.fn()
+    logout: vi.fn(),
+    refreshProfile: vi.fn().mockResolvedValue({ success: true })
   }
 }))
 
@@ -33,6 +34,15 @@ function mountHeader() {
 
 
 describe('administrator navigation entry', () => {
+  it('refreshes the current profile before relying on cached role data', () => {
+    auth.isLoggedIn = true
+    auth.refreshProfile.mockClear()
+
+    mountHeader()
+
+    expect(auth.refreshProfile).toHaveBeenCalledOnce()
+  })
+
   it('is visible only to administrators', () => {
     auth.isAdmin = true
     expect(mountHeader().find('.admin-entry').exists()).toBe(true)

@@ -15,7 +15,7 @@
           <span class="deadline mono">{{ deadlineLabel }}</span>
         </div>
 
-        <h3 class="card-title">{{ hackathon.name }}</h3>
+        <h3 class="card-title" :title="hackathon.name">{{ displayName }}</h3>
         <p class="card-summary">{{ hackathon.summary }}</p>
 
         <div v-if="hackathon.track_tags?.length" class="card-tags">
@@ -26,7 +26,7 @@
           <div class="location-wrap">
             <span class="footer-label">{{ hackathon.location || modeLabel }}</span>
           </div>
-          <span class="prize mono">{{ hackathon.prize_pool || '奖项待公布' }}</span>
+          <span class="prize mono" :title="hackathon.prize_pool || undefined">{{ displayPrize }}</span>
         </div>
       </div>
     </article>
@@ -36,6 +36,7 @@
 <script setup>
 import { computed } from 'vue'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
+import { compactText } from '@/utils/text'
 
 const props = defineProps({
   hackathon: { type: Object, required: true }
@@ -52,6 +53,8 @@ const statusLabel = computed(() => statusMap[props.hackathon.status]?.label || p
 const statusTone = computed(() => statusMap[props.hackathon.status]?.tone || 'neutral')
 const platformLabel = computed(() => props.hackathon.source_platform || 'HackHub')
 const platformInitial = computed(() => platformLabel.value.slice(0, 1).toUpperCase())
+const displayName = computed(() => compactText(props.hackathon.name, 49, '未命名赛事'))
+const displayPrize = computed(() => compactText(props.hackathon.prize_pool, 25, '奖项待公布'))
 const modeLabel = computed(() => ({ online: '线上', offline: '线下', hybrid: '线上 + 线下' }[props.hackathon.mode] || '线上'))
 
 const deadlineLabel = computed(() => {
@@ -117,11 +120,12 @@ const deadlineLabel = computed(() => {
 .card-content { flex: 1; display: flex; flex-direction: column; padding: var(--space-5); }
 .card-meta { min-height: 24px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); }
 .deadline { color: var(--color-accent); font-size: 11px; }
-.card-title { min-height: 48px; margin-bottom: var(--space-2); font-size: var(--text-lg); line-height: 1.35; }
+.card-title { min-height: 48px; display: -webkit-box; margin-bottom: var(--space-2); overflow: hidden; font-size: var(--text-lg); line-height: 1.35; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .card-summary { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: 1.55; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-4); }
 .tag { padding: 3px 8px; color: var(--color-text-secondary); background: var(--surface-muted); border-radius: 6px; font-size: 11px; }
 .card-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); margin-top: auto; padding-top: var(--space-5); }
-.footer-label { color: var(--color-text-tertiary); font-size: var(--text-xs); }
-.prize { color: var(--color-accent); font-size: var(--text-sm); font-weight: 650; text-align: right; }
+.location-wrap { min-width: 0; }
+.footer-label { display: block; overflow: hidden; color: var(--color-text-tertiary); font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+.prize { max-width: 55%; overflow: hidden; color: var(--color-accent); font-size: var(--text-sm); font-weight: 650; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
 </style>

@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -116,6 +116,10 @@ function logout() {
 watch(() => route.fullPath, closeMenu)
 watch(menuOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : ''
+})
+
+onMounted(() => {
+  if (auth.isLoggedIn) auth.refreshProfile()
 })
 
 onBeforeUnmount(() => {
