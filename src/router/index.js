@@ -18,9 +18,15 @@ const routes = [
   {
     path: '/admin',
     component: () => import('@/views/Admin/AdminLayout.vue'),
-    redirect: '/admin/users',
+    redirect: '/admin/hackathons',
     meta: { title: '运营控制台', requiresAdmin: true },
     children: [
+      {
+        path: 'hackathons',
+        name: 'admin-hackathons',
+        component: () => import('@/views/Admin/AdminHackathons.vue'),
+        meta: { title: '赛事内容', requiresAdmin: true }
+      },
       {
         path: 'users',
         name: 'admin-users',

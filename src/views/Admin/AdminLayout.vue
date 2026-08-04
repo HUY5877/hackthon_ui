@@ -7,13 +7,13 @@
       </div>
       <nav aria-label="管理员导航">
         <RouterLink to="/admin/users"><span>01</span><span><strong>用户权限</strong><small>Access control</small></span></RouterLink>
-        <span class="rail-placeholder"><span>02</span><span><strong>赛事内容</strong><small>Content desk</small></span></span>
+        <RouterLink to="/admin/hackathons"><span>02</span><span><strong>赛事内容</strong><small>Content desk</small></span></RouterLink>
         <span class="rail-placeholder"><span>03</span><span><strong>爬虫调度</strong><small>Crawler runs</small></span></span>
       </nav>
       <div class="rail-foot"><span></span>权限边界已启用</div>
     </aside>
     <nav class="admin-tabs" aria-label="移动端管理员导航">
-      <RouterLink to="/admin/users">用户权限</RouterLink><span>赛事内容</span><span>爬虫调度</span>
+      <RouterLink to="/admin/users">用户权限</RouterLink><RouterLink to="/admin/hackathons">赛事内容</RouterLink><span>爬虫调度</span>
     </nav>
     <main class="admin-workspace"><RouterView /></main>
   </div>
