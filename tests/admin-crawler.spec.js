@@ -59,9 +59,13 @@ describe('administrator crawler operations', () => {
     await vi.advanceTimersByTimeAsync(2000)
     expect(wrapper.get('[role="progressbar"]').attributes('aria-valuenow')).toBe('55')
     expect(wrapper.text()).toContain('devpost')
+    expect(wrapper.get('[data-test="crawler-motion"]').classes()).toContain('progress-card--live')
+    expect(wrapper.text()).toContain('清洗')
 
     await vi.advanceTimersByTimeAsync(2000)
     expect(wrapper.get('[role="progressbar"]').attributes('aria-valuenow')).toBe('100')
+    expect(wrapper.get('[data-test="crawler-motion"]').classes()).not.toContain('progress-card--live')
+    expect(wrapper.get('[data-test="crawler-motion"]').classes()).toContain('progress-card--complete')
     expect(localStorage.getItem('admin_crawler_task_id')).toBeNull()
 
     const callsAfterCompletion = adminAPI.getCrawlerTask.mock.calls.length
